@@ -1,7 +1,9 @@
+require 'debugger'
 module Stock
   class Stock1
     attr_accessor :items
     def import_from_csv file
+      file ||= 'stock_items.csv'
       lines = File.readlines(file)
       @items = lines.split(',')
     end
@@ -31,6 +33,7 @@ module Stock
     end
 
     def to_json
+      debugger
 
     end
 
