@@ -2,14 +2,13 @@ require 'debugger'
 module Stock
   class Stock1
     attr_accessor :items
-    def import_from_csv file
-      file ||= 'stock_items.csv'
+    def import_from_csv file = 'stock_items.csv'
       lines = File.readlines(file)
-      @items = lines.split(',')
+      @items = lines.map{|line|line.delete("\n").split(',')}
     end
 
     def parse_items
-      @items[1..items.length].each do |item|
+      @items[1..items.length].map do |item|
         #TODO need validation
         rs = Hash.new
         rs[:id] = item[0]
@@ -19,15 +18,17 @@ module Stock
         rs[:price_type] = item[4]
         rs[:quantity_on_hand] = item[5]
         rs[:modifiers] = Array.new
+        rs_modifier = Hash.new
         item[6..item.length].each_with_index do |modifier, index|
-          if index % 2 == 1
-            rs_modifier = Hash.new
+          if index % 2 == 0
             rs_modifier[:name] = modifier
           else
             rs_modifier[:price] = modifier
             rs[:modifiers] << rs_modifier
+            rs_modifier = Hash.new
           end
         end if item.length >= 7
+        rs
       end
 
     end
