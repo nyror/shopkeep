@@ -2,13 +2,21 @@ require 'debugger'
 module Stock
   class Stock1
     attr_accessor :items
-    def import_from_csv file = 'stock_items.csv'
+    attr_accessor :line_items
+
+    def initialize file = 'stock_items.csv' 
+      import_from_csv file
+      debugger
+      @items = parse_items
+    end
+
+    def import_from_csv file = 'stock_items.csv' 
       lines = File.readlines(file)
-      @items = lines.map{|line|line.delete("\n").split(',')}
+      @line_items = lines.map{|line|line.delete("\n").split(',')}
     end
 
     def parse_items
-      @items[1..items.length].map do |item|
+      @line_items[1..@line_items.length].map do |item|
         #TODO need validation
         rs = Hash.new
         rs[:id] = item[0]
